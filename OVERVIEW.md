@@ -216,6 +216,38 @@ already proven to work rather than inventing a new one.
 - [ ] Load a first end-to-end vertical slice: e.g., Denver + Colorado results
       for a single recent election cycle, joined to boundaries
 
+**Near-term scope (2026-07-08):** CD/SD/HD-level and Denver-level actual
+results aren't downloaded yet (blocked — see
+[`docs/election-results-sources.md`](docs/election-results-sources.md)), so
+the vertical slice and crosswalk work start at the **county** tier, which is
+fully unblocked with what's already downloaded:
+- [x] **County-level vertical slice**: `scripts/process_election_results.py`
+      cleans the raw MEDSL CSV into `data/processed/election_results/president_county/2000-2016/results.parquet`
+      (CO only, GEOID-keyed to match the county boundaries).
+      `r/vertical_slice_county_president.R` joins it to county boundaries
+      and plots a 2016 choropleth (`r/output/president_county_2016_choropleth.png`).
+      **Verified**: statewide margin computed from the joined data is Dem
+      +4.91 pts, matching the actual 2016 Colorado result exactly; 0
+      counties failed to match on join.
+- [x] **County↔district crosswalk, empirically tested**:
+      `r/crosswalk_county_district.R` spatially overlays counties against
+      CD/SD/HD (reprojected to EPSG:5070 Albers for area math; >1%-of-
+      county-area threshold to filter out shapefile-edge slivers between
+      the two independently-sourced boundary sets). **Result**: 7/64
+      counties (11%) split across multiple CDs, 13/64 (20%) across State
+      Senate districts, 16/64 (25%) across State House districts — split
+      rate climbs with district count, as expected, and the split counties
+      are exactly the populous Front Range ones (Adams, Arapahoe, Denver,
+      El Paso, Jefferson, Larimer, Weld, Boulder, Douglas) plus a handful
+      of rural counties split for compactness (Eagle, Delta, Garfield,
+      Montrose, Chaffee, Huerfano, Montezuma, Mesa, Pueblo) — a sensible
+      empirical confirmation of the "preserve whole counties" criterion.
+      Full per-county breakdown: `r/output/county_district_crosswalk_summary.csv`;
+      map: `r/output/county_cd_split_map.png`.
+- [ ] Once CD/SD/HD/Denver results are unblocked, extend the vertical slice
+      to those tiers directly (no crosswalk needed there — those results
+      are already reported per-district)
+
 ### Phase 3 — Demographics Integration
 - [ ] Acquire precinct boundaries + results (deferred from Phase 1 — see
       [`docs/data-sources.md`](docs/data-sources.md#precincts-deferred--phase-34-not-phase-1))
