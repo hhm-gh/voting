@@ -110,13 +110,21 @@ already proven to work rather than inventing a new one.
   (`energy`, `housing`, `co-data` all use it). Both `pandas`/`pyarrow` and R's
   `arrow` package read it natively, no server process required.
 - **Geometry/boundary data** (CD/SD/HD/council/precinct/Census shapes):
-  **GeoParquet** (geometry stored as a WKB column, per the GeoParquet 1.0
-  spec) as the processed format, so geometries stay in the same file family
-  as everything else — readable from Python via `geopandas`, and from R via
-  `sf` (GDAL's Parquet driver) or the `sfarrow` package. Fall back to
-  **GeoPackage** (`.gpkg`) for a given dataset if GeoParquet tooling causes
-  friction on the R side — it's a mature, single-file, no-size-cap format
-  that both `geopandas` and `sf` read natively without extra plumbing.
+  `scripts/process_phase1_boundaries.py` writes **both** GeoParquet and
+  GeoPackage for every dataset, and `r/load.R`'s `load_boundary()` tries
+  GeoParquet first, falling back to GeoPackage on error — this was written
+  to get an empirical answer rather than guess. **Result (tested
+  2026-07-08): GeoParquet reads fail in R and it falls back to GeoPackage
+  every time.** Root cause confirmed via `sf::sf_extSoftVersion()`: R's `sf`
+  package links its own statically-bundled GDAL 3.8.5 (independent of
+  whatever GDAL is on the system `PATH` — this machine's Homebrew GDAL is
+  3.13.1 and does have a Parquet driver, but that's irrelevant, `sf` never
+  sees it), and `sf::st_drivers()` confirms that bundled 3.8.5 build has
+  zero Parquet drivers registered. **So: GeoPackage (`.gpkg`) is the
+  format that actually works for R today, not GeoParquet** — keep writing
+  both (GeoParquet costs nothing extra and may pay off once `sf`'s bundled
+  GDAL catches up), but treat GeoPackage as primary for anything the R side
+  needs to read now.
 - **Raw downloads stay untouched** in `data/raw/` in whatever format the
   source actually provides — mostly **Shapefile** and some **KML** for
   boundaries (see [`docs/data-sources.md`](docs/data-sources.md)); these are
@@ -168,10 +176,21 @@ already proven to work rather than inventing a new one.
 - [ ] Identify and download historical election results at district/county
       level for target races (precinct-level results deferred to Phase 3/4
       alongside precinct boundaries)
-- [x] Set up initial project scaffolding per the
-      [[#Architecture: Python retrieval/storage, R analysis/viz]] above:
-      `scripts/` for Python retrieval, `data/raw/` populated. `data/processed/`
-      and the `r/` RStudio project still TODO (nothing to analyze yet).
+- [x] Set up project scaffolding per the
+      [[#Architecture: Python retrieval/storage, R analysis/viz]] above, and
+      smoke-test it end-to-end before adding election results:
+      `scripts/process_phase1_boundaries.py` converts every `data/raw/`
+      boundary file to `data/processed/<name>/<cycle>/boundaries.{geoparquet,gpkg}`
+      (reprojected to `EPSG:4326`; counties filtered to `STATEFP == '08'`).
+      `r/` is a full RStudio project (`renv`-managed) with `load.R` and
+      `smoketest.R`, which loads all 5 processed datasets, checks feature
+      counts (8/35/65/64/13 — all correct) and that each bbox falls inside
+      Colorado's real extent, and plots each to `r/output/*.png`. Visually
+      confirmed the congressional and Denver plots are recognizably correct
+      (Colorado's outline with 8 CDs; Denver's shape including the DIA
+      panhandle). This also empirically resolved the GeoParquet-vs-
+      GeoPackage question — see
+      [[#Storage format]] above.
 - [x] Establish a raw-data vs. processed-data convention, with provenance
       notes (source, retrieval date, license) — each `data/raw/<dataset>/<cycle>/`
       directory now has a `provenance.json` sidecar (source page URL, license,
@@ -217,10 +236,13 @@ already proven to work rather than inventing a new one.
 ## Status
 
 Phase 0 documentation is complete (`docs/geography.md`, `docs/redistricting.md`,
-`docs/offices.md`). Phase 1 is underway: boundary file sources are documented
-(`docs/data-sources.md`) and the current-cycle (2021) CD/SD/HD/county/Denver
-council boundary files are downloaded to `data/raw/` (gitignored) via
-`scripts/fetch_phase1_boundaries.py`, each with a `provenance.json` sidecar.
-Remaining Phase 1 work: historical election results, prior-cycle boundaries,
-and the `data/processed/` + `r/` scaffolding. This is the project's first
-code (`scripts/fetch_phase1_boundaries.py`).
+`docs/offices.md`). Phase 1 is well underway: boundary file sources are
+documented (`docs/data-sources.md`), the current-cycle (2021)
+CD/SD/HD/county/Denver council boundary files are downloaded to `data/raw/`
+(gitignored) via `scripts/fetch_phase1_boundaries.py`, and the full
+Python-processing + R-viz pipeline is built and smoke-tested end-to-end
+(`scripts/process_phase1_boundaries.py` → `data/processed/` →
+`r/smoketest.R` → `r/output/*.png`, all verified correct) — this is the
+project's first R code and its first real Python→R vertical-slice test,
+ahead of Phase 2's planned one. Remaining Phase 1 work: historical election
+results and prior-cycle boundaries.

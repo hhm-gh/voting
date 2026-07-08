@@ -1,3 +1,11 @@
 data/**
 !data/**/
 !data/**/provenance.json
+
+# Python (uv-managed)
+.venv/
+__pycache__/
+*.pyc
+
+# R smoke-test plots — regenerate via `Rscript r/smoketest.R`
+r/output/
