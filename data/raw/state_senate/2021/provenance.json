@@ -1,0 +1,15 @@
+{
+  "source_page": "https://redistricting.colorado.gov/content/senate-final-approved-errata",
+  "license": "Colorado state government data (public)",
+  "retrieved_at": "2026-07-08T15:35:40.486133+00:00",
+  "files": {
+    "2021_Approved_Senate_Plan_w_Final_Adjustments.zip": {
+      "url": "https://redistricting.colorado.gov/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBc0VEIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--3e163d6928a7c388874e81cb0dda49ee2b644d33/2021_Approved_Senate_Plan_w_Final_Adjustments.zip",
+      "size_bytes": 1277590
+    },
+    "2021_Approved_Senate_Plan_w_Final_Adjustments.txt": {
+      "url": "https://redistricting.colorado.gov/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBc0lEIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--f18cc7e43a16e5051ca0fb102481bca0f25a574e/2021_Approved_Senate_Plan_w_Final_Adjustments.txt",
+      "size_bytes": 3024850
+    }
+  }
+}

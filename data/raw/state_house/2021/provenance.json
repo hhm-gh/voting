@@ -1,0 +1,15 @@
+{
+  "source_page": "https://redistricting.colorado.gov/content/house-final-approved",
+  "license": "Colorado state government data (public)",
+  "retrieved_at": "2026-07-08T15:35:41.693544+00:00",
+  "files": {
+    "2021_Approved_House_Plan_w_Final_Adjustments.zip": {
+      "url": "https://redistricting.colorado.gov/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcjhEIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--ce9e9fcf6b39c1f7d8ea318e727d1e0ca8f19a92/2021_Approved_House_Plan_w_Final_Adjustments.zip",
+      "size_bytes": 1797207
+    },
+    "2021_Approved_House_Plan_w_Final_Adjustments.txt": {
+      "url": "https://redistricting.colorado.gov/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBc0FEIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--744738d13feb9f9b4ea15914d1f76101fddedc56/2021_Approved_House_Plan_w_Final_Adjustments.txt",
+      "size_bytes": 3076315
+    }
+  }
+}

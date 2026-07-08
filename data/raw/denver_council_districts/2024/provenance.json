@@ -1,0 +1,12 @@
+{
+  "source_page": "https://www.denvergov.org/opendata/dataset/city-and-county-of-denver-council-districts",
+  "license": "City and County of Denver \u2014 USE CONSTRAINTS: provided as-is, not for engineering purposes (see source page for full text)",
+  "retrieved_at": "2026-07-08T15:35:44.663254+00:00",
+  "files": {
+    "denver_council_districts.geojson": {
+      "url": "https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_ADMN_COUNCILDIST_A/FeatureServer/3/query?where=1%3D1&outFields=*&f=geojson",
+      "size_bytes": 728844
+    }
+  },
+  "note": "Fetched directly from the live ArcGIS FeatureServer (ODC_ADMN_COUNCILDIST_A, layer 3) rather than scraping a download button, since the Hub page is a JS app with no static download link."
+}

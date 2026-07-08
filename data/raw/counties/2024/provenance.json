@@ -1,0 +1,12 @@
+{
+  "source_page": "https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2024&layergroup=Counties+%28and+equivalent%29",
+  "license": "US Census Bureau TIGER/Line (public domain)",
+  "retrieved_at": "2026-07-08T15:35:42.875392+00:00",
+  "files": {
+    "tl_2024_us_county.zip": {
+      "url": "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip",
+      "size_bytes": 83913260
+    }
+  },
+  "note": "National file, all US counties \u2014 filter to STATEFP=08 (Colorado) during processing."
+}

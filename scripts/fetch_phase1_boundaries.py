@@ -44,6 +44,14 @@ DATASETS = [
         "cycle": "2021",
         "source_page": "https://redistricting.colorado.gov/content/senate-final-approved-errata",
         "license": "Colorado state government data (public)",
+        "note": (
+            "Use the errata page, not senate-final-approved: that one serves "
+            "2021_Final_Approved_Senate_Plan.zip, a differently-named file that "
+            "doesn't match the _w_Final_Adjustments pattern the Congressional "
+            "and House pages use. The errata page's filename does match, "
+            "confirming it's the corrected version consistent with the other "
+            "two chambers."
+        ),
         "files": {
             "2021_Approved_Senate_Plan_w_Final_Adjustments.zip": (
                 "https://redistricting.colorado.gov/rails/active_storage/blobs/redirect/"

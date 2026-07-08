@@ -1,0 +1,15 @@
+{
+  "source_page": "https://redistricting.colorado.gov/content/congressional-final-approved",
+  "license": "Colorado state government data (public)",
+  "retrieved_at": "2026-07-08T15:35:39.365212+00:00",
+  "files": {
+    "2021_Approved_Congressional_Plan_with_Final_Adjustments.zip": {
+      "url": "https://redistricting.colorado.gov/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcjBEIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--e091bab0fdcc0944ce431ca5708665efb8263228/2021_Approved_Congressional_Plan_with_Final_Adjustments.zip",
+      "size_bytes": 742751
+    },
+    "2021_Approved_Congressional_Plan_w_Final_Adjustments.txt": {
+      "url": "https://redistricting.colorado.gov/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBcjREIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--68c6991842e7dd5bbe287f4ed557e92720c84666/2021_Approved_Congressional_Plan_w_Final_Adjustments.txt",
+      "size_bytes": 2947267
+    }
+  }
+}

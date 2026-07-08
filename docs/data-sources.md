@@ -29,12 +29,58 @@ reasoning behind the Priority column.
 | Census Tract / Block Group / Block | [Census TIGER/Line](https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html) | Shapefile | By vintage year, back to 2000s | Deferred — Phase 3 |
 | Precinct | [Colorado Geospatial Portal](https://geodata.colorado.gov/datasets/fedmaps::voting-districts-2/about) (statewide) or individual counties | Shapefile / feature layer | Inconsistent — see caveat below | Deferred — Phase 3/4 |
 
+## Acquisition log — Phase 1 first cycle (2026-07-08)
+
+All five Phase 1 datasets (everything above marked "Phase 1") have been
+downloaded via `scripts/fetch_phase1_boundaries.py` into `data/raw/`
+(gitignored — see [Architecture](../OVERVIEW.md) in `OVERVIEW.md`). Each
+`data/raw/<dataset>/<cycle>/` directory has a `provenance.json` sidecar
+(source URL, license, retrieval timestamp, per-file size) — but since
+`data/` itself is gitignored, that sidecar is **local-only** and won't
+survive a fresh clone. This table is the durable, version-controlled record
+of what was fetched and how it checked out.
+
+| Dataset | Cycle | Format | Size | Verification |
+|---|---|---|---|---|
+| Congressional | 2021 | Shapefile + block-assignment `.txt` | ~750 KB zip | Complete `.shp`/`.shx`/`.dbf`/`.prj` bundle |
+| State Senate | 2021 (errata) | Shapefile + `.txt` | ~1.3 MB zip | Complete bundle |
+| State House | 2021 | Shapefile + `.txt` | ~1.8 MB zip | Complete bundle |
+| Counties | Census TIGER 2024 (national) | Shapefile | ~84 MB zip | Complete bundle; needs `STATEFP=08` filter for Colorado during processing |
+| Denver Council Districts | current (ArcGIS live layer) | GeoJSON | ~730 KB | 13 features = 11 numbered districts + 2 at-large, matching the office count in `OVERVIEW.md` |
+
+**Notes on how each was actually fetched** (worth keeping since the
+"obvious" download link wasn't always the right one):
+
+- **State Senate — used the errata page, not the plain "final-approved" one.**
+  `senate-final-approved` serves `2021_Final_Approved_Senate_Plan.zip`, a
+  differently-named file that doesn't match the `_w_Final_Adjustments`
+  naming pattern the Congressional and House pages use.
+  `senate-final-approved-errata` serves
+  `2021_Approved_Senate_Plan_w_Final_Adjustments.zip`, which does match —
+  confirming it's the corrected version that's actually consistent with the
+  other two chambers. Use the errata page going forward.
+- **Denver Council Districts — no static download link exists.** The Hub
+  page (`opendata-geospatialdenver.hub.arcgis.com`) is a JS app with
+  nothing to scrape. Instead: searched the ArcGIS REST API
+  (`arcgis.com/sharing/rest/search`) for `title:"Council Districts" AND
+  owner:The_City_and_County_of_Denver`, found item
+  `1f9d2c1e2fdd4957b465257e25d55e54` ("Denver City Council Districts",
+  Feature Service), resolved it to its live FeatureServer URL, and queried
+  layer `3` (not `0` — the service's only layer is index 3) directly as
+  GeoJSON. This hits the live authoritative layer rather than a
+  point-in-time export, so re-running the script always gets current data.
+- **Congressional / House pages** served direct, working download links —
+  no reverse-engineering needed there.
+- **Counties** used the well-known, stable Census TIGER URL pattern
+  (`www2.census.gov/geo/tiger/TIGER<year>/COUNTY/tl_<year>_us_county.zip`);
+  confirmed reachable via a `HEAD` request before downloading the full 84 MB.
+
 ## Congressional / State Senate / State House Districts
 
 **Source:** Colorado Independent Redistricting Commissions site, `redistricting.colorado.gov`. This is the authoritative source for the maps actually in effect — approved by the Colorado Supreme Court on March 18, 2022, after the commissions' 2021 process (see [`redistricting.md`](redistricting.md)).
 
 - Congressional: https://redistricting.colorado.gov/content/congressional-final-approved
-- State Senate: https://redistricting.colorado.gov/content/senate-final-approved (an errata/corrected version also exists: `senate-final-approved-errata`)
+- State Senate: **use** https://redistricting.colorado.gov/content/senate-final-approved-errata (the errata/corrected version — see [Acquisition log](#acquisition-log--phase-1-first-cycle-2026-07-08) for why the plain `senate-final-approved` page is the wrong one to use)
 - State House: https://redistricting.colorado.gov/content/house-final-approved
 
 Each page provides:
