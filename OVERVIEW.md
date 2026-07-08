@@ -37,7 +37,11 @@ to resolve first. Rough hierarchy from smallest/most granular to largest:
 - **Precinct** — smallest voting unit; where individual votes are tallied.
   Drawn/maintained by county election officials. Precincts nest inside every
   other district type below but are redrawn independently of them (for
-  logistics like polling place capacity, not politics).
+  logistics like polling place capacity, not politics). Messy to source
+  (no single clean statewide feed) and not needed for the early phases of
+  this project — district/county-level results suffice until we reach
+  gerrymandering metrics and the demographics crosswalk (Phase 3/4). See
+  [`docs/data-sources.md`](docs/data-sources.md#precincts-deferred--phase-34-not-phase-1).
 - **Congressional District (CD)** — US House seats; Colorado has 8. Redrawn
   every 10 years post-Census. Since 2021, Colorado uses an independent
   redistricting commission (Amendment Y, 2018) rather than the legislature.
@@ -87,11 +91,18 @@ Open questions to resolve during the documentation phase:
       how elected, current officeholder as of a snapshot date)
 
 ### Phase 1 — Foundation / Data Acquisition
-- [ ] Identify and download authoritative boundary files (shapefile/GeoJSON)
-      for CDs, SDs, HDs, precincts, and Denver council districts — for at
-      least the current cycle, ideally also prior cycles for comparison
-- [ ] Identify and download historical election results at the most granular
-      level available (precinct-level where possible) for target races
+- [x] Identify authoritative boundary file *sources* (shapefile/GeoJSON) for
+      CDs, SDs, HDs, precincts, counties, and Denver council districts — see
+      [`docs/data-sources.md`](docs/data-sources.md). Precinct *acquisition*
+      is deferred to Phase 3/4 (see that doc's Sequencing section) — it's
+      the messiest geography to source and isn't needed until the
+      gerrymandering metrics and demographics crosswalk work.
+- [ ] Download boundary files for a first working cycle (CD, SD, HD, county,
+      Denver council — current 2021 maps), ideally also prior cycles for
+      comparison
+- [ ] Identify and download historical election results at district/county
+      level for target races (precinct-level results deferred to Phase 3/4
+      alongside precinct boundaries)
 - [ ] Set up a project structure/repo scaffolding (data directory conventions,
       a lightweight tech stack decision — e.g., Python + GeoPandas + a
       Postgres/PostGIS or DuckDB backend)
@@ -107,17 +118,27 @@ Open questions to resolve during the documentation phase:
       for a single recent election cycle, joined to boundaries
 
 ### Phase 3 — Demographics Integration
+- [ ] Acquire precinct boundaries + results (deferred from Phase 1 — see
+      [`docs/data-sources.md`](docs/data-sources.md#precincts-deferred--phase-34-not-phase-1))
+      and Census tract/block group/block boundaries
 - [ ] Pull ACS demographic data (population, race/ethnicity, age, income,
       education) at Census tract/block group level
 - [ ] Build the demographic-to-voting-geography crosswalk (areal
-      interpolation or block-level apportionment)
+      interpolation or block-level apportionment) — this is the primary
+      reason precinct-level results are needed: they're the finest
+      resolution real votes exist at, and don't nest cleanly into Census
+      geography
 - [ ] Produce first joined dataset: demographics + results by precinct/district
 
 ### Phase 4 — Analysis & Visualization
 - [ ] Basic descriptive analysis: turnout, vote share trends over time by
-      geography
+      geography (district/county level is sufficient here)
 - [ ] Redistricting/gerrymandering metrics: compactness, partisan symmetry,
-      efficiency gap, comparison across map proposals if available
+      efficiency gap, comparison across map proposals if available — these
+      require precinct-level results as the sub-district unit to
+      re-aggregate (district totals alone can't be tested against
+      alternative maps); see
+      [`docs/redistricting.md`](docs/redistricting.md#gerrymandering-vocabulary--metrics)
 - [ ] Mapping/visualization layer (e.g., choropleth maps of results/demographics)
 
 ### Phase 5 — Forecasting / Trend Analysis (long-term)
@@ -127,6 +148,6 @@ Open questions to resolve during the documentation phase:
 ## Status
 
 Phase 0 documentation is complete (`docs/geography.md`, `docs/redistricting.md`,
-`docs/offices.md`). Project still has no code. Next concrete step is Phase 1:
-identifying and acquiring authoritative boundary files and historical
-election results data.
+`docs/offices.md`). Phase 1 is underway: boundary file *sources* are now
+documented (`docs/data-sources.md`); next is actually downloading files and
+sourcing historical election results data. Project still has no code.
