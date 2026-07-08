@@ -28,7 +28,8 @@ See [`OVERVIEW.md`](OVERVIEW.md) for the full goals, scope, and phased plan.
 | `scripts/fetch_phase1_boundaries.py` | Downloads CD/SD/HD/county/Denver council boundaries to `data/raw/` |
 | `scripts/process_phase1_boundaries.py` | Converts raw boundaries to `data/processed/` (GeoParquet + GeoPackage, reprojected, Colorado-filtered) |
 | `scripts/fetch_election_results.py` | Downloads historical election results to `data/raw/election_results/` |
-| `r/` | RStudio project (`renv`-managed) — `load.R`, `smoketest.R` (visual sanity checks), `explore.R` (interactive `mapview` exploration) |
+| `scripts/process_election_results.py` | Cleans raw election results into `data/processed/election_results/` (GEOID-keyed Parquet) |
+| `r/` | RStudio project (`renv`-managed) — `load.R`, `smoketest.R` (visual sanity checks), `explore.R` (interactive `mapview` exploration), `vertical_slice_county_president.R` (Phase 2: results × boundaries choropleth), `crosswalk_county_district.R` (Phase 2: county↔district split analysis) |
 
 **Elections in scope:** US President (Electoral College) → US Congress
 (Senate + Colorado's 8 House districts) → Colorado Governor → Colorado State
@@ -41,7 +42,14 @@ underway: boundary files for the current (2021) cycle are downloaded and
 verified, the Python-processing + R-viz pipeline is built and smoke-tested,
 and election-results sourcing has started (US President 2000–2016
 downloaded; several other sources identified but not yet acquired — see
-`docs/election-results-sources.md`).
+`docs/election-results-sources.md`). Phase 2 (Core Data Model) has started
+at the county tier, the only tier unblocked so far: a county-level results ×
+boundaries vertical slice is built and verified (computed 2016 statewide
+margin matches the actual historical result), and a county↔district
+crosswalk empirically confirms Colorado's "preserve whole counties"
+redistricting criterion (11–25% of counties split, rising with district
+count). District-level (CD/SD/HD/Denver) results are still blocked on the
+sources noted above.
 
 See the [[OVERVIEW#Phased Plan|Phased Plan]] in `OVERVIEW.md` for the full
 roadmap (Documentation → Data Acquisition → Core Data Model → Demographics
