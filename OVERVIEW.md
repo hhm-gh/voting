@@ -161,18 +161,22 @@ already proven to work rather than inventing a new one.
       is deferred to Phase 3/4 (see that doc's Sequencing section) — it's
       the messiest geography to source and isn't needed until the
       gerrymandering metrics and demographics crosswalk work.
-- [ ] Download boundary files for a first working cycle (CD, SD, HD, county,
-      Denver council — current 2021 maps), ideally also prior cycles for
-      comparison
+- [x] Download boundary files for a first working cycle (CD, SD, HD, county,
+      Denver council — current 2021 maps) via `scripts/fetch_phase1_boundaries.py`
+      into `data/raw/` (gitignored — not committed). Prior cycles for
+      comparison still TODO.
 - [ ] Identify and download historical election results at district/county
       level for target races (precinct-level results deferred to Phase 3/4
       alongside precinct boundaries)
-- [ ] Set up project scaffolding per the
-      [Architecture](#architecture-python-retrievalstorage-r-analysisviz)
-      above: Python package for retrieval/storage, `r/` RStudio project for
-      analysis/viz, `data/raw/` + `data/processed/` directories
-- [ ] Establish a raw-data vs. processed-data convention, with provenance
-      notes (source, retrieval date, license) for everything ingested
+- [x] Set up initial project scaffolding per the
+      [[#Architecture: Python retrieval/storage, R analysis/viz]] above:
+      `scripts/` for Python retrieval, `data/raw/` populated. `data/processed/`
+      and the `r/` RStudio project still TODO (nothing to analyze yet).
+- [x] Establish a raw-data vs. processed-data convention, with provenance
+      notes (source, retrieval date, license) — each `data/raw/<dataset>/<cycle>/`
+      directory now has a `provenance.json` sidecar (source page URL, license,
+      retrieval timestamp, per-file size) written automatically by the fetch
+      script
 
 ### Phase 2 — Core Data Model
 - [ ] Define a normalized schema linking: election → office → geography →
@@ -213,6 +217,10 @@ already proven to work rather than inventing a new one.
 ## Status
 
 Phase 0 documentation is complete (`docs/geography.md`, `docs/redistricting.md`,
-`docs/offices.md`). Phase 1 is underway: boundary file *sources* are now
-documented (`docs/data-sources.md`); next is actually downloading files and
-sourcing historical election results data. Project still has no code.
+`docs/offices.md`). Phase 1 is underway: boundary file sources are documented
+(`docs/data-sources.md`) and the current-cycle (2021) CD/SD/HD/county/Denver
+council boundary files are downloaded to `data/raw/` (gitignored) via
+`scripts/fetch_phase1_boundaries.py`, each with a `provenance.json` sidecar.
+Remaining Phase 1 work: historical election results, prior-cycle boundaries,
+and the `data/processed/` + `r/` scaffolding. This is the project's first
+code (`scripts/fetch_phase1_boundaries.py`).
