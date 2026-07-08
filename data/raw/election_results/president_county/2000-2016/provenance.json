@@ -1,0 +1,12 @@
+{
+  "source_page": "https://github.com/MEDSL/county-returns",
+  "license": "MEDSL (MIT Election Data and Science Lab) \u2014 open GitHub mirror, no guestbook gate",
+  "retrieved_at": "2026-07-08T16:24:38.718941+00:00",
+  "files": {
+    "countypres_2000-2016.csv": {
+      "url": "https://raw.githubusercontent.com/MEDSL/county-returns/master/countypres_2000-2016.csv",
+      "size_bytes": 4538055
+    }
+  },
+  "note": "Unrestricted mirror of MEDSL's pre-2018 presidential county returns. Their post-2018 files and all House/Senate files are gated behind a Harvard Dataverse guestbook (name/email/institution/purpose) that can't be scripted around honestly \u2014 see docs/election-results-sources.md."
+}

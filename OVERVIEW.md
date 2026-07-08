@@ -175,7 +175,16 @@ already proven to work rather than inventing a new one.
       comparison still TODO.
 - [ ] Identify and download historical election results at district/county
       level for target races (precinct-level results deferred to Phase 3/4
-      alongside precinct boundaries)
+      alongside precinct boundaries) — sources documented in
+      [`docs/election-results-sources.md`](docs/election-results-sources.md).
+      **Downloaded**: US President, county-level, 2000–2016 (MEDSL's open
+      GitHub mirror, no gate) via `scripts/fetch_election_results.py`,
+      verified against known results. **Still needed**: US President
+      2018–2024 + all US House/Senate (MEDSL's Harvard Dataverse — gated
+      behind a one-time manual guestbook step, can't be scripted around
+      honestly); CO Governor + State Senate/House (Colorado's historical
+      elections database — JS app, no API found yet); Denver City Council
+      (Tableau dashboard, no export API found yet).
 - [x] Set up project scaffolding per the
       [[#Architecture: Python retrieval/storage, R analysis/viz]] above, and
       smoke-test it end-to-end before adding election results:
@@ -190,7 +199,9 @@ already proven to work rather than inventing a new one.
       (Colorado's outline with 8 CDs; Denver's shape including the DIA
       panhandle). This also empirically resolved the GeoParquet-vs-
       GeoPackage question — see
-      [[#Storage format]] above.
+      [[#Storage format]] above. `r/explore.R` adds `mapview` for ad hoc
+      interactive (zoomable, Leaflet-based) exploration of any processed
+      dataset, as a nicer alternative to the static smoke-test plots.
 - [x] Establish a raw-data vs. processed-data convention, with provenance
       notes (source, retrieval date, license) — each `data/raw/<dataset>/<cycle>/`
       directory now has a `provenance.json` sidecar (source page URL, license,
@@ -244,5 +255,10 @@ Python-processing + R-viz pipeline is built and smoke-tested end-to-end
 (`scripts/process_phase1_boundaries.py` → `data/processed/` →
 `r/smoketest.R` → `r/output/*.png`, all verified correct) — this is the
 project's first R code and its first real Python→R vertical-slice test,
-ahead of Phase 2's planned one. Remaining Phase 1 work: historical election
-results and prior-cycle boundaries.
+ahead of Phase 2's planned one. Election-results sourcing has started
+(`docs/election-results-sources.md`): US President 2000–2016 county-level
+results are downloaded and verified; US House/Senate, 2018–2024 President,
+CO Governor, CO State Senate/House, and Denver City Council results are all
+identified but not yet acquired (each has a different, non-trivial access
+story — see that doc). Remaining Phase 1 work: finish election-results
+acquisition and prior-cycle boundaries.
