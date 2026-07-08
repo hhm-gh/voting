@@ -1,5 +1,22 @@
 	# US / Colorado / Denver Voting & Demographics Project — Overview
 
+## Table of Contents
+
+- [[#Purpose]]
+- [[#Elections of Primary Interest]]
+- [[#Geographic Units — Glossary (to be expanded)|Geographic Units — Glossary]]
+- [[#Architecture: Python retrieval/storage, R analysis/viz]]
+  - [[#Storage format]]
+- [[#Data Sources (to be vetted/expanded)|Data Sources]]
+- [[#Phased Plan]]
+  - [[#Phase 0 — Documentation (current phase)|Phase 0 — Documentation]]
+  - [[#Phase 1 — Foundation / Data Acquisition]]
+  - [[#Phase 2 — Core Data Model]]
+  - [[#Phase 3 — Demographics Integration]]
+  - [[#Phase 4 — Analysis & Visualization]]
+  - [[#Phase 5 — Forecasting / Trend Analysis (long-term)|Phase 5 — Forecasting / Trend Analysis]]
+- [[#Status]]
+
 ## Purpose
 
 Build the ability to analyze voting behavior, election outcomes, and demographics
@@ -68,6 +85,53 @@ Open questions to resolve during the documentation phase:
 - Where to source authoritative, versioned boundary files (shapefiles/GeoJSON)
   for each geography, per election cycle (boundaries change over time!).
 
+## Architecture: Python retrieval/storage, R analysis/viz
+
+**Design constraint:** data retrieval and storage are strictly separated
+from analysis and visualization, along a language boundary:
+
+- **Python** owns everything that touches the network or writes data:
+  downloading boundary files and election results, parsing/normalizing them,
+  building the geography crosswalk, and writing the result to `data/`.
+- **R** owns analysis and visualization: it only *reads* from `data/` and
+  never fetches anything itself.
+- Data flow is **one-way**: Python writes → `data/` → R reads. Nothing in R
+  should require network access or write back into `data/`.
+
+This mirrors the existing pattern in `~/code/energy` (Python `eia/` package
+downloads to Parquet in `data/`; the R/Shiny app in `r/` reads it via
+`arrow::read_parquet()` and never calls the network) — reusing a convention
+already proven to work rather than inventing a new one.
+
+### Storage format
+
+- **Tabular data** (election results, demographics, crosswalk tables):
+  **Parquet** — consistent with every other data project in `~/code`
+  (`energy`, `housing`, `co-data` all use it). Both `pandas`/`pyarrow` and R's
+  `arrow` package read it natively, no server process required.
+- **Geometry/boundary data** (CD/SD/HD/council/precinct/Census shapes):
+  **GeoParquet** (geometry stored as a WKB column, per the GeoParquet 1.0
+  spec) as the processed format, so geometries stay in the same file family
+  as everything else — readable from Python via `geopandas`, and from R via
+  `sf` (GDAL's Parquet driver) or the `sfarrow` package. Fall back to
+  **GeoPackage** (`.gpkg`) for a given dataset if GeoParquet tooling causes
+  friction on the R side — it's a mature, single-file, no-size-cap format
+  that both `geopandas` and `sf` read natively without extra plumbing.
+- **Raw downloads stay untouched** in `data/raw/` in whatever format the
+  source actually provides — mostly **Shapefile** and some **KML** for
+  boundaries (see [`docs/data-sources.md`](docs/data-sources.md)); these are
+  legitimate native GIS formats, fine to keep as the unmodified source-of-
+  truth copy, just not what we build the working pipeline on top of. Python
+  converts raw → `data/processed/` in the formats above. This is the
+  raw-vs-processed provenance convention referenced in Phase 1 below.
+- **No server-based database** (Postgres/PostGIS) for now — this is a
+  solo, local, non-concurrent project, so file-based Parquet/GeoParquet is
+  enough. `DuckDB` (with its `spatial` extension) is worth reaching for
+  later if cross-file SQL querying gets useful — it can query Parquet/
+  GeoParquet files in place without a separate load step, as already used
+  in `~/code/co-data` — but it's an optional convenience layer, not a
+  replacement for the file-based storage above.
+
 ## Data Sources (to be vetted/expanded)
 
 - **Colorado Secretary of State** — election results, redistricting commission data
@@ -103,9 +167,10 @@ Open questions to resolve during the documentation phase:
 - [ ] Identify and download historical election results at district/county
       level for target races (precinct-level results deferred to Phase 3/4
       alongside precinct boundaries)
-- [ ] Set up a project structure/repo scaffolding (data directory conventions,
-      a lightweight tech stack decision — e.g., Python + GeoPandas + a
-      Postgres/PostGIS or DuckDB backend)
+- [ ] Set up project scaffolding per the
+      [Architecture](#architecture-python-retrievalstorage-r-analysisviz)
+      above: Python package for retrieval/storage, `r/` RStudio project for
+      analysis/viz, `data/raw/` + `data/processed/` directories
 - [ ] Establish a raw-data vs. processed-data convention, with provenance
       notes (source, retrieval date, license) for everything ingested
 

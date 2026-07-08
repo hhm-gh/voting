@@ -4,6 +4,15 @@ Phase 1 deliverable: where to get authoritative boundary files (shapefile /
 GeoJSON) for each geography in [`geography.md`](geography.md). This doc
 covers *boundaries only* — election results sourcing is a separate pass.
 
+Every source below distributes boundaries as **Shapefile** (some also offer
+KML) — a legitimate, universally-supported native GIS format, fine to keep
+untouched as the `data/raw/` copy. It's not what we build the working
+pipeline on, though: see
+[Architecture](../OVERVIEW.md#architecture-python-retrievalstorage-r-analysisviz)
+in `OVERVIEW.md` for the Python-writes/R-reads split and the GeoParquet
+(fallback: GeoPackage) processed-storage decision these files get converted
+into.
+
 ## Quick reference
 
 Ordered by when we actually need each one — see

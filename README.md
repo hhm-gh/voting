@@ -29,6 +29,14 @@ Phase 0 (documentation) is complete. No data pipeline or analysis code
 exists yet. Next up is Phase 1: identifying and acquiring authoritative
 district boundary files and historical election results data.
 
-See the [Phased Plan](OVERVIEW.md#phased-plan) in `OVERVIEW.md` for the full
+See the [[OVERVIEW#Phased Plan|Phased Plan]] in `OVERVIEW.md` for the full
 roadmap (Documentation → Data Acquisition → Core Data Model → Demographics
 Integration → Analysis/Visualization → Forecasting).
+
+---
+
+**Note on internal links:** this repo lives inside an Obsidian vault
+(`~/code`), so links to headings use Obsidian wikilink syntax
+(`[[File#Heading]]`) rather than plain Markdown anchors (`[text](#anchor)`)
+— the latter don't reliably resolve in Obsidian. See `~/code/CLAUDE.md` for
+the full writeup. Wikilinks won't render as clickable links on GitHub.
