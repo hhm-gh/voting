@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(defuddle parse *)",
+      "Bash(pip show *)",
+      "Bash(source .venv/bin/activate)"
+    ]
+  }
+}
